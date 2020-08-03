@@ -26,11 +26,25 @@ export default class SystemPageDropdowns extends React.Component {
   state = {
     exampleOne: "1",
     exampleTwo: "3",
-    exampleThree: "United States of America",
+    exampleThree: "",
+    exampleFour: "United States of America",
+    inputValue: "",
+    options: SELECT_MENU_OPTIONS,
   };
 
   _handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
+  };
+
+  _handleInputChange = (e) => {
+    let query = e.target.value.toLowerCase();
+    let newItems = [];
+    for (let item of SELECT_MENU_OPTIONS) {
+      if (item.name.toLowerCase().includes(query)) {
+        newItems.push(item);
+      }
+    }
+    this.setState({ inputValue: e.target.value, options: newItems });
   };
 
   render() {
@@ -56,15 +70,15 @@ export default class SystemPageDropdowns extends React.Component {
         <hr />
         <br />
         <System.P>
-          Import React and the <System.CodeText>SelectMenu</System.CodeText>{" "}
-          and/or the <System.CodeText>SelectCountryMenu</System.CodeText>{" "}
-          Components.
+          Import React and the <System.CodeText>SelectMenu</System.CodeText>,{" "}
+          <System.CodeText>InputMenu</System.CodeText> and/or the{" "}
+          <System.CodeText>SelectCountryMenu</System.CodeText> Components.
         </System.P>
         <br />
         <br />
         <CodeBlock>
           {`import * as React from "react";
-import { SelectMenu, SelectCountryMenu } from "slate-react-system";`}
+import { SelectMenu, InputMenu, SelectCountryMenu } from "slate-react-system";`}
         </CodeBlock>
         <br />
         <br />
@@ -92,7 +106,6 @@ import { SelectMenu, SelectCountryMenu } from "slate-react-system";`}
         />
         <br />
         <br />
-        <br />
         <System.P>
           Define the dropdown menu options. Each entry must have a name and a
           value.
@@ -114,7 +127,6 @@ import { SelectMenu, SelectCountryMenu } from "slate-react-system";`}
   { value: "12", name: "Sagittarus" },
 ];`}
         </CodeBlock>
-        <br />
         <br />
         <System.P>
           Declare the Dropdown component. Default values can be assigned using{" "}
@@ -164,14 +176,84 @@ class ExampleTwo extends React.Component {
         <br />
         <br />
         <br />
+        <System.H2>Dropdown with Input</System.H2>
+        <hr />
+        <br />
+        <System.InputMenu
+          name="exampleThree"
+          options={this.state.options}
+          onChange={this._handleChange}
+          value={this.state.exampleThree}
+          onInputChange={this._handleInputChange}
+          inputValue={this.state.inputValue}
+        />
+        <br />
+        <br />
+        <System.P>
+          Declare an dropdown with input. This component allows users to filter
+          a long list of values by typing.
+        </System.P>
+        <br />
+        <System.P>
+          Note that there are both <System.CodeText>onChange</System.CodeText> &{" "}
+          <System.CodeText>value</System.CodeText>, as well as{" "}
+          <System.CodeText>onInputChange</System.CodeText> &{" "}
+          <System.CodeText>inputValue</System.CodeText>. The first two apply to
+          the final returned value, and the latter two apply to the user's typed
+          input.
+        </System.P>
+        <br />
+        <System.P>
+          <System.CodeText>onInputChange</System.CodeText> should be a function
+          that both updates <System.CodeText>inputValue</System.CodeText> and
+          filters <System.CodeText>options</System.CodeText> based on the user's{" "}
+          <System.CodeText>inputValue</System.CodeText>.
+        </System.P>
+        <br />
+        <CodeBlock>
+          {`class ExampleThree extends React.Component {
+  state = { exampleThree: "", inputValue: "", options: SELECT_MENU_OPTIONS };
+
+  _handleChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  _handleInputChange = (e) => {
+    let query = e.target.value.toLowerCase();
+    let newItems = [];
+    for (let item of SELECT_MENU_OPTIONS) {
+      if (item.name.toLowerCase().includes(query)) {
+        newItems.push(item);
+      }
+    }
+    this.setState({ inputValue: e.target.value, options: newItems });
+  };
+
+  render() {
+    return (
+      <InputMenu
+        name="exampleThree"
+        options={this.state.options}
+        onChange={this._handleChange}
+        value={this.state.exampleThree}
+        onInputChange={this._handleInputChange}
+        inputValue={this.state.inputValue}
+      />
+    );
+  }
+}`}
+        </CodeBlock>
+        <br />
+        <br />
+        <br />
         <System.H2>Country Picker Dropdown</System.H2>
         <hr />
         <br />
         <System.SelectCountryMenu
           label="Pick your country"
-          name="exampleThree"
+          name="exampleFour"
           full
-          value={this.state.exampleThree}
+          value={this.state.exampleFour}
           category="country"
           onChange={this._handleChange}
         />
@@ -183,8 +265,8 @@ class ExampleTwo extends React.Component {
         </System.P>
         <br />
         <CodeBlock>
-          {`class ExampleThree extends React.Component {
-  state = { exampleThree: "United States of America" };
+          {`class ExampleFour extends React.Component {
+  state = { exampleFour: "United States of America" };
 
   _handleChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
@@ -192,9 +274,9 @@ class ExampleTwo extends React.Component {
     return (
       <SelectCountryMenu
         label="Pick your country"
-        name="countryMenu"
+        name="exampleFour"
         full
-        value={this.state.countryMenu}
+        value={this.state.exampleFour}
         category="country"
         onChange={this._handleChange}
       />
@@ -239,7 +321,8 @@ class ExampleTwo extends React.Component {
                   ),
                   b: "function",
                   c: "null",
-                  d: "Function called upon an onChange event",
+                  d:
+                    "Function called upon an onChange event. For an input dropdown, this is when the selected value changes",
                 },
                 {
                   id: 3,
@@ -255,45 +338,84 @@ class ExampleTwo extends React.Component {
                 },
                 {
                   id: 4,
-                  a: "name",
-                  b: "string",
+                  a: (
+                    <span style={{ fontFamily: Constants.font.semiBold }}>
+                      onInputChange
+                    </span>
+                  ),
+                  b: "function",
                   c: "null",
-                  d: "Input name",
+                  d: (
+                    <span>
+                      <span style={{ fontFamily: Constants.font.semiBold }}>
+                        Only applicable to input dropdown.{" "}
+                      </span>
+                      <span>
+                        Function called when the user-inputted value changes
+                      </span>
+                    </span>
+                  ),
                 },
                 {
                   id: 5,
+                  a: (
+                    <span style={{ fontFamily: Constants.font.semiBold }}>
+                      inputValue
+                    </span>
+                  ),
+                  b: "string",
+                  c: "null",
+                  d: (
+                    <span>
+                      <span style={{ fontFamily: Constants.font.semiBold }}>
+                        Only applicable to input dropdown.{" "}
+                      </span>
+                      <span>The value that the user-inputted value takes.</span>
+                    </span>
+                  ),
+                },
+                {
+                  id: 6,
+                  a: "name",
+                  b: "string",
+                  c: "null",
+                  d: "Dropdown name",
+                },
+                {
+                  id: 7,
                   a: "label",
                   b: "string",
                   c: "null",
                   d: "Label text",
                 },
                 {
-                  id: 6,
+                  id: 8,
                   a: "description",
                   b: "string",
                   c: "null",
                   d: "Description text",
                 },
                 {
-                  id: 7,
+                  id: 9,
                   a: "tooltip",
                   b: "string",
                   c: "null",
                   d: "Tooltip text",
                 },
                 {
-                  id: 8,
+                  id: 10,
                   a: "full",
                   b: "boolean",
                   c: "false",
-                  d: "Sets width to 100% if true",
+                  d: "If true, no max-width. Otherwise, max-width is 480px",
                 },
                 {
-                  id: 9,
+                  id: 11,
                   a: "category",
                   b: "string",
                   c: "null",
-                  d: "Category text",
+                  d:
+                    "Category text that appears to the right of the selected value",
                 },
               ],
             }}
