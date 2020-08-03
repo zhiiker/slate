@@ -16,6 +16,7 @@ import {
   FilecoinRetrievalDealsList,
 } from "~/components/system/modules/FilecoinDealsList";
 import { FilecoinSettings } from "~/components/system/modules/FilecoinSettings";
+import { SpotlightSearch } from "~/components/system/modules/SpotlightSearch";
 
 // NOTE(jim): Global components
 import { GlobalModal } from "~/components/system/components/GlobalModal";
@@ -35,8 +36,9 @@ import { CardTabGroup } from "~/components/system/components/CardTabGroup";
 import { CheckBox } from "~/components/system/components/CheckBox";
 import { CodeTextarea } from "~/components/system/components/CodeTextarea";
 import { DatePicker } from "~/components/system/components/DatePicker";
-import { HoverTile } from '~/components/system/components/HoverTile';
+import { HoverTile } from "~/components/system/components/HoverTile";
 import { Input } from "~/components/system/components/Input";
+import { InputMenu } from "~/components/system/components/InputMenu";
 import { ListEditor } from "~/components/system/components/ListEditor";
 import { PopoverNavigation } from "~/components/system/components/PopoverNavigation";
 import { RadioGroup } from "~/components/system/components/RadioGroup";
@@ -116,12 +118,14 @@ export {
   GlobalNotification,
   HoverTile,
   Input,
+  InputMenu,
   ListEditor,
   PopoverNavigation,
   RadioGroup,
   SelectCountryMenu,
   SelectMenu,
   Slider,
+  SpotlightSearch,
   StatUpload,
   StatDownload,
   TabGroup,

@@ -32,7 +32,7 @@ const STYLES_DESCRIPTION_GROUP_DESCRIPTION = css`
 
 export const DescriptionGroup = (props) => {
   return (
-    <div style={{ maxWidth: props.full ? "auto" : "480px", ...props.style }}>
+    <div style={{ maxWidth: props.full ? "none" : "480px", ...props.style }}>
       {!Strings.isEmpty(props.label) ? (
         <div css={STYLES_DESCRIPTION_GROUP_LABEL}>
           {props.label}{" "}
