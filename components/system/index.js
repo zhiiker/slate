@@ -36,6 +36,7 @@ import { CheckBox } from "~/components/system/components/CheckBox";
 import { CodeTextarea } from "~/components/system/components/CodeTextarea";
 import { DatePicker } from "~/components/system/components/DatePicker";
 import { Input } from "~/components/system/components/Input";
+import { InputMenu } from "~/components/system/components/InputMenu";
 import { ListEditor } from "~/components/system/components/ListEditor";
 import { PopoverNavigation } from "~/components/system/components/PopoverNavigation";
 import { RadioGroup } from "~/components/system/components/RadioGroup";
@@ -112,6 +113,7 @@ export {
   GlobalCarousel,
   GlobalNotification,
   Input,
+  InputMenu,
   ListEditor,
   PopoverNavigation,
   RadioGroup,
