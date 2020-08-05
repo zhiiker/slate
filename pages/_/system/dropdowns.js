@@ -181,6 +181,7 @@ class ExampleTwo extends React.Component {
         <br />
         <System.InputMenu
           name="exampleThree"
+          placeholder="Choose your sign"
           options={this.state.options}
           onChange={this._handleChange}
           value={this.state.exampleThree}
@@ -190,8 +191,8 @@ class ExampleTwo extends React.Component {
         <br />
         <br />
         <System.P>
-          Declare an dropdown with input. This component allows users to filter
-          a long list of values by typing.
+          A dropdown with input allows users to filter a long list of values by
+          typing.
         </System.P>
         <br />
         <System.P>
@@ -199,15 +200,15 @@ class ExampleTwo extends React.Component {
           <System.CodeText>value</System.CodeText>, as well as{" "}
           <System.CodeText>onInputChange</System.CodeText> &{" "}
           <System.CodeText>inputValue</System.CodeText>. The first two apply to
-          the final returned value, and the latter two apply to the user's typed
+          the final selected value, and the latter two apply to the user's typed
           input.
         </System.P>
         <br />
         <System.P>
           <System.CodeText>onInputChange</System.CodeText> should be a function
-          that both updates <System.CodeText>inputValue</System.CodeText> and
-          filters <System.CodeText>options</System.CodeText> based on the user's{" "}
-          <System.CodeText>inputValue</System.CodeText>.
+          that filters <System.CodeText>options</System.CodeText> based on the
+          user's <System.CodeText>inputValue</System.CodeText> and also saves
+          the <System.CodeText>inputValue</System.CodeText>.
         </System.P>
         <br />
         <CodeBlock>
@@ -233,6 +234,7 @@ class ExampleTwo extends React.Component {
     return (
       <InputMenu
         name="exampleThree"
+        placeholder="Choose your sign"
         options={this.state.options}
         onChange={this._handleChange}
         value={this.state.exampleThree}
