@@ -26,19 +26,10 @@ const STYLES_BACKGROUND = css`
 
 const STYLES_MODAL = css`
   position: relative;
-  padding: 8px;
   max-width: 568px;
   width: 100%;
   border-radius: 4px;
   background-color: ${Constants.system.white};
-`;
-
-const STYLES_CLOSE_ICON = css`
-  height: 24px;
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  cursor: pointer;
 `;
 
 export class GlobalModal extends React.Component {
@@ -95,11 +86,6 @@ export class GlobalModal extends React.Component {
           isDataMenuCaptured={true}
         >
           <div css={STYLES_MODAL} style={this.props.style}>
-            <SVG.Dismiss
-              css={STYLES_CLOSE_ICON}
-              onClick={this._handleDelete}
-              onKeyPress={this._handleEnterPress}
-            />
             {this.state.modal}
           </div>
         </Boundary>

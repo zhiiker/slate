@@ -57,6 +57,8 @@ export default class SystemPageDropdowns extends React.Component {
         <System.H1>
           Dropdowns <ViewSourceLink file="system/dropdowns.js" />
         </System.H1>
+        <System.GlobalModal />
+        <System.SpotlightSearch />
         <br />
         <br />
         <System.P>

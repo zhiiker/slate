@@ -8,7 +8,6 @@ import { css } from "@emotion/react";
 import { DescriptionGroup } from "~/components/system/components/fragments/DescriptionGroup";
 
 const INPUT_STYLES = `
-  box-sizing: border-box;
   font-family: ${Constants.font.text};
   -webkit-appearance: none;
   width: 100%;
@@ -62,6 +61,31 @@ const STYLES_INPUT = css`
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07),
       inset 0 0 0 2px ${Constants.system.brand};
   }
+
+  ::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: ${Constants.system.darkGray};
+    opacity: 1; /* Firefox */
+  }
+
+  :-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: ${Constants.system.darkGray};
+  }
+
+  ::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: ${Constants.system.darkGray};
+  }
+`;
+
+const STYLES_INPUT_NO_OUTLINE = css`
+  ${INPUT_STYLES}
+  padding: 0 24px 0 24px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15),
+    inset 0 0 0 1px ${Constants.system.darkGray};
 
   ::placeholder {
     /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -168,7 +192,7 @@ export class Input extends React.Component {
             ref={(c) => {
               this._input = c;
             }}
-            css={STYLES_INPUT}
+            css={this.props.noOutline ? STYLES_INPUT_NO_OUTLINE : STYLES_INPUT}
             value={this.props.value}
             name={this.props.name}
             type={this.props.type}
