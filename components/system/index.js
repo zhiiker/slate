@@ -16,6 +16,7 @@ import {
   FilecoinRetrievalDealsList,
 } from "~/components/system/modules/FilecoinDealsList";
 import { FilecoinSettings } from "~/components/system/modules/FilecoinSettings";
+import { SpotlightSearch } from "~/components/system/modules/SpotlightSearch";
 
 // NOTE(jim): Global components
 import { GlobalModal } from "~/components/system/components/GlobalModal";
@@ -120,6 +121,7 @@ export {
   SelectCountryMenu,
   SelectMenu,
   Slider,
+  SpotlightSearch,
   StatUpload,
   StatDownload,
   TabGroup,
