@@ -120,18 +120,10 @@ export class InputMenu extends React.Component {
     } else if (e.keyCode === 40) {
       //down -- this one doesn't jump properly
       if (this.state.selectedIndex < this.props.options.length - 1) {
-        let listElem = this._optionRoot.children[
-          this.state.selectedIndex + 1
-        ].getBoundingClientRect();
-        console.log(this._optionRoot.getBoundingClientRect());
-        console.log(listElem);
-        return;
-        let bottomPos = listElem.offsetTop + listElem.offsetHeight;
-        console.log(listElem.offsetTop);
-        if (
-          bottomPos >
-          this._optionRoot.offsetTop + this._optionRoot.offsetHeight
-        ) {
+        let listElem = this._optionRoot.children[this.state.selectedIndex + 1];
+        let elemRect = listElem.getBoundingClientRect();
+        let rootRect = this._optionRoot.getBoundingClientRect();
+        if (elemRect.bottom > rootRect.bottom) {
           this._optionRoot.scrollTop =
             bottomPos - this._optionRoot.offsetHeight;
         }
@@ -141,17 +133,11 @@ export class InputMenu extends React.Component {
     } else if (e.keyCode === 38) {
       //up -- this one works, but add in something that ignores the "on mouse enter" for the case where it moves by jumping this way
       if (this.state.selectedIndex > 0) {
-        let listElem = this._optionRoot.children[
-          this.state.selectedIndex - 1
-        ].getBoundingClientRect();
-        console.log(this._optionRoot.getBoundingClientRect());
-        console.log(listElem);
-        return;
+        let listElem = this._optionRoot.children[this.state.selectedIndex - 1];
+        let elemRect = listElem.getBoundingClientRect();
+        let rootRect = this._optionRoot.getBoundingClientRect();
         let topPos = listElem.offsetTop;
-        console.log(this._optionRoot);
-        console.log(topPos);
-        console.log(this._optionRoot.offsetTop);
-        if (topPos < this._optionRoot.offsetTop) {
+        if (elemRect.top < rootRect.top) {
           console.log("offset");
           this._optionRoot.scrollTop = topPos;
         }
