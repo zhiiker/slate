@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as Constants from "~/common/constants";
-import * as SVG from "~/components/system/svg";
+import * as SVG from "~/common/svg";
 import * as Strings from "~/common/strings";
 
 import { css } from "@emotion/react";
@@ -66,12 +66,22 @@ let items = [
   },
 ];
 
-const STYLES_SEARCH_ICON = css`
-  height: 16px;
-  color: ${Constants.system.darkGrey};
+const STYLES_ICON_CIRCLE = css`
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background-color: ${Constants.system.foreground};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
-const STYLES_ICON_BOX = css`
+const STYLES_ANCHOR_ICON = css`
+  height: 16px;
+  color: ${Constants.system.black};
+`;
+
+const STYLES_ANCHOR_BOX = css`
   height: 20px;
   width: 20px;
   cursor: pointer;
@@ -79,31 +89,33 @@ const STYLES_ICON_BOX = css`
 
 const STYLES_MODAL = css`
   width: 95vw;
-  max-width: 552px;
-  height: 50vh;
-  padding: 16px;
+  max-width: 600px;
+  height: 60vh;
+  padding: 24px;
 `;
 
+const STYLES_INPUT = {
+  marginBottom: "16px",
+};
+
 const STYLES_INPUT_MENU = {
-  border: "none",
-  boxShadow: "none",
-  borderRadius: "0px",
-  maxWidth: "520px",
-  height: "calc(50vh - 56px)",
+  height: "calc(100% - 80px)",
+  width: "calc(100% - 48px)",
   overflowY: "scroll",
 };
 
 const STYLES_USER_ENTRY_CONTAINER = css`
   display: grid;
-  grid-template-columns: 72px auto 1fr;
+  grid-template-columns: repeat(3, auto) 1fr;
+  grid-column-gap: 16px;
   align-items: center;
 `;
 
 const STYLES_PROFILE_IMAGE = css`
   background-size: cover;
   background-position: 50% 50%;
-  height: 40px;
-  width: 40px;
+  height: 24px;
+  width: 24px;
   border-radius: 50%;
 `;
 
@@ -116,7 +128,7 @@ const UserEntry = ({ item }) => {
           css={STYLES_PROFILE_IMAGE}
         />
         <strong>{item.name}</strong>
-        <a href={`/${item.username}`} style={{ justifySelf: "end" }}>
+        <a css={STYLES_LINK} href={`/${item.username}`}>
           @{item.username}
         </a>
       </div>
@@ -130,32 +142,48 @@ const STYLES_ENTRY = css`
 
 const STYLES_SLATE_ENTRY_CONTAINER = css`
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: repeat(3, auto) 1fr;
+  grid-column-gap: 16px;
   align-items: center;
 `;
 
 const STYLES_SLATE_IMAGES_CONTAINER = css`
   display: grid;
-  grid-template-columns: repeat(3, 56px);
+  grid-template-columns: repeat(3, auto) 1fr;
+  grid-column-gap: 16px;
   margin: 8px 0px;
+  margin-left: 40px;
 `;
 
 const STYLES_SLATE_IMAGE = css`
   background-size: cover;
   background-position: 50% 50%;
-  height: 48px;
-  width: 48px;
-  border-radius: 4px;
+  height: 72px;
+  width: 72px;
+`;
+
+const STYLES_LINK = css`
+  color: ${Constants.system.black};
+  text-decoration: none;
+
+  :hover {
+    color: ${Constants.system.brand};
+  }
 `;
 
 const SlateEntry = ({ item }) => {
   return (
     <div css={STYLES_ENTRY}>
       <div css={STYLES_SLATE_ENTRY_CONTAINER}>
-        <div>{item.slatename}</div>
-        <a href={`/${item.username}`} style={{ justifySelf: "end" }}>
-          @{item.username}
-        </a>
+        <div css={STYLES_ICON_CIRCLE}>
+          <SVG.Slate2 height="16px" />
+        </div>
+        <strong>{item.slatename}</strong>
+        <div>
+          <a css={STYLES_LINK} href={`/${item.username}`}>
+            @{item.username}
+          </a>
+        </div>
       </div>
       <div css={STYLES_SLATE_IMAGES_CONTAINER}>
         {item.urls.map((link) => (
@@ -173,19 +201,21 @@ const FileEntry = ({ item }) => {
   return (
     <div css={STYLES_ENTRY}>
       <div css={STYLES_USER_ENTRY_CONTAINER}>
-        <div
-          style={{
-            backgroundImage: `url(${
-              item.type === "image" ? item.url : fileImg
-            })`,
-          }}
-          css={STYLES_SLATE_IMAGE}
-        />
-        <div>{item.name}</div>
-        <a href={`/${item.username}`} style={{ justifySelf: "end" }}>
+        <div css={STYLES_ICON_CIRCLE}>
+          <SVG.Folder2 height="16px" />
+        </div>
+        <strong>{item.name}</strong>
+        <a href={`/${item.username}`} css={STYLES_LINK}>
           @{item.username}
         </a>
       </div>
+      <div
+        style={{
+          backgroundImage: `url(${item.type === "image" ? item.url : fileImg})`,
+          margin: "8px 0px 8px 40px",
+        }}
+        css={STYLES_SLATE_IMAGE}
+      />
     </div>
   );
 };
@@ -253,17 +283,17 @@ class SpotlightSearchContent extends React.Component {
     return (
       <div css={STYLES_MODAL}>
         <InputMenu
-          full
           show
           search
           name="exampleThree"
-          placeholder="Search slates and users"
+          placeholder="Search..."
           options={this.state.options}
           onChange={this._handleChange}
           value={this.state.value}
           onInputChange={this._handleInputChange}
           inputValue={this.state.inputValue}
           style={STYLES_INPUT_MENU}
+          inputStyle={STYLES_INPUT}
           itemStyle={{ padding: "0px 8px" }}
         />
       </div>
@@ -281,8 +311,8 @@ export class SpotlightSearch extends React.Component {
 
   render() {
     return (
-      <div css={STYLES_ICON_BOX} onClick={this._handleCreate}>
-        <SVG.Search css={STYLES_SEARCH_ICON} />
+      <div css={STYLES_ANCHOR_BOX} onClick={this._handleCreate}>
+        <SVG.Search css={STYLES_ANCHOR_ICON} />
       </div>
     );
   }

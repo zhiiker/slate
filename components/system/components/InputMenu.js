@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as Constants from "~/common/constants";
-import * as SVG from "~/components/system/svg";
+import * as SVG from "~/common/svg";
 import * as Strings from "~/common/strings";
 
 import { css } from "@emotion/react";
@@ -17,13 +17,10 @@ const STYLES_DROPDOWN = css`
   position: absolute;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  border-radius: 4px;
   background-color: ${Constants.system.white};
-  border: 1px solid ${Constants.system.border};
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15),
-    inset 0 0 0 1px ${Constants.system.darkGray};
+  width: 100%;
+  border-radius: 12px 12px 0px 0px;
 `;
 
 const STYLES_DROPDOWN_ITEM = css`
@@ -33,16 +30,49 @@ const STYLES_DROPDOWN_ITEM = css`
   cursor: pointer;
 `;
 
+const STYLES_INPUT = css`
+  font-family: ${Constants.font.text};
+  -webkit-appearance: none;
+  width: 100%;
+  height: 40px;
+  background: ${Constants.system.foreground};
+  color: ${Constants.system.black};
+  display: flex;
+  font-size: 14px;
+  align-items: center;
+  justify-content: flex-start;
+  outline: 0;
+  border: 0;
+  box-sizing: border-box;
+  transition: 200ms ease all;
+  padding: 0 24px 0 48px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 12px;
+  margin-bottom: 16px;
+
+  ::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: ${Constants.system.black};
+    opacity: 1; /* Firefox */
+  }
+
+  :-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: ${Constants.system.black};
+  }
+
+  ::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: ${Constants.system.black};
+  }
+`;
+
 export class InputMenu extends React.Component {
   _optionRoot;
 
-  static defaultProps = {
-    show: false,
-  };
-
   state = {
-    show: this.props.show,
-    selectedIndex: 0,
+    selectedIndex: -1,
   };
 
   componentDidMount = () => {
@@ -53,22 +83,9 @@ export class InputMenu extends React.Component {
     window.removeEventListener("keydown", this._handleDocumentKeydown);
   };
 
-  _handleDelete = (e) => {
-    if (!this.props.value) {
-      this.props.onInputChange({
-        target: {
-          value: "",
-          name: this.props.name,
-        },
-      });
-    }
-    this.setState({ show: false });
-  };
-
   _handleInputChange = (e) => {
-    if (this.state.selectedIndex !== 0) {
-      console.log("set to zero");
-      this.setState({ selectedIndex: 0 });
+    if (this.state.selectedIndex !== -1) {
+      this.setState({ selectedIndex: -1 });
     }
     this.props.onChange({
       target: {
@@ -80,7 +97,6 @@ export class InputMenu extends React.Component {
   };
 
   _handleSelect = (index) => {
-    this.setState({ show: false });
     this.props.onChange({
       target: {
         value: this.props.options[index].value,
@@ -102,22 +118,39 @@ export class InputMenu extends React.Component {
     } else if (e.keyCode === 9) {
       this._handleDelete();
     } else if (e.keyCode === 40) {
-      //down -- this one errors
+      //down -- this one doesn't jump properly
       if (this.state.selectedIndex < this.props.options.length - 1) {
-        let listElem = this._optionRoot.children[this.state.selectedIndex + 1];
-        let bottomPos = listElem.offsetBottom;
-        if (bottomPos > this._optionRoot.offsetBottom) {
-          console.log("offset");
+        let listElem = this._optionRoot.children[
+          this.state.selectedIndex + 1
+        ].getBoundingClientRect();
+        console.log(this._optionRoot.getBoundingClientRect());
+        console.log(listElem);
+        return;
+        let bottomPos = listElem.offsetTop + listElem.offsetHeight;
+        console.log(listElem.offsetTop);
+        if (
+          bottomPos >
+          this._optionRoot.offsetTop + this._optionRoot.offsetHeight
+        ) {
           this._optionRoot.scrollTop =
             bottomPos - this._optionRoot.offsetHeight;
         }
         this.setState({ selectedIndex: this.state.selectedIndex + 1 });
       }
+      e.preventDefault();
     } else if (e.keyCode === 38) {
       //up -- this one works, but add in something that ignores the "on mouse enter" for the case where it moves by jumping this way
       if (this.state.selectedIndex > 0) {
-        let listElem = this._optionRoot.children[this.state.selectedIndex - 1];
+        let listElem = this._optionRoot.children[
+          this.state.selectedIndex - 1
+        ].getBoundingClientRect();
+        console.log(this._optionRoot.getBoundingClientRect());
+        console.log(listElem);
+        return;
         let topPos = listElem.offsetTop;
+        console.log(this._optionRoot);
+        console.log(topPos);
+        console.log(this._optionRoot.offsetTop);
         if (topPos < this._optionRoot.offsetTop) {
           console.log("offset");
           this._optionRoot.scrollTop = topPos;
@@ -134,75 +167,54 @@ export class InputMenu extends React.Component {
   };
 
   render() {
-    console.log(this._optionRoot);
     return (
-      <div
-        css={STYLES_DROPDOWN_CONTAINER}
-        style={{
-          maxWidth: this.props.full ? "none" : "480px",
-          ...this.props.containerStyle,
-        }}
-      >
-        <Boundary
-          enabled
-          onOutsideRectEvent={this._handleDelete}
-          isDataMenuCaptured={true}
-        >
-          <Input
-            full
-            placeholder={this.props.placeholder}
+      <div css={STYLES_DROPDOWN_CONTAINER} style={this.props.containerStyle}>
+        <div style={{ position: "relative" }}>
+          <input
+            css={STYLES_INPUT}
             value={this.props.inputValue}
+            placeholder={this.props.placeholder}
+            style={this.props.inputStyle}
             onChange={this._handleInputChange}
-            onFocus={() => this.setState({ show: true })}
-            noOutline
           />
-          {this.state.show &&
-          this.props.options &&
-          this.props.options.length > 0 ? (
-            <div
-              data-menu
-              ref={(c) => {
-                this._optionRoot = c;
-              }}
-              css={STYLES_DROPDOWN}
-              style={{
-                maxWidth: this.props.full ? "none" : "480px",
-                ...this.props.style,
-              }}
-            >
-              {this.props.options.map((each, i) => (
-                <div
-                  key={each.value}
-                  css={STYLES_DROPDOWN_ITEM}
-                  style={{
-                    backgroundColor:
-                      this.state.selectedIndex === i
-                        ? Constants.system.gray
-                        : Constants.system.white,
-                    borderBottom: this.props.search
-                      ? this.state.selectedIndex === i + 1
-                        ? `1px solid ${Constants.system.white}`
-                        : `1px solid ${Constants.system.gray}`
-                      : "none",
-                    borderRadius:
-                      this.props.search && this.state.selectedIndex === i
-                        ? "4px"
-                        : "0px",
-                    ...this.props.itemStyle,
-                  }}
-                  onClick={() => {
-                    this._handleSelect(i);
-                  }}
-                  onMouseEnter={() => {
-                    this.setState({ selectedIndex: i });
-                  }}
-                >
-                  {each.name}
-                </div>
-              ))}
-            </div>
-          ) : null}
-        </Boundary>
+          <SVG.Search
+            height="20px"
+            style={{ position: "absolute", left: "12px", top: "10px" }}
+          />
+        </div>
+        {this.props.options && this.props.options.length > 0 ? (
+          <div
+            data-menu
+            ref={(c) => {
+              this._optionRoot = c;
+            }}
+            css={STYLES_DROPDOWN}
+            style={this.props.style}
+          >
+            {this.props.options.map((each, i) => (
+              <div
+                key={each.value}
+                css={STYLES_DROPDOWN_ITEM}
+                style={{
+                  backgroundColor:
+                    this.state.selectedIndex === i
+                      ? Constants.system.foreground
+                      : Constants.system.white,
+                  borderRadius: "12px",
+                  ...this.props.itemStyle,
+                }}
+                onClick={() => {
+                  this._handleSelect(i);
+                }}
+                onMouseEnter={() => {
+                  this.setState({ selectedIndex: i });
+                }}
+              >
+                {each.name}
+              </div>
+            ))}
+          </div>
+        ) : null}
       </div>
     );
   }

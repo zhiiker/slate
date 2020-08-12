@@ -79,31 +79,6 @@ const STYLES_INPUT = css`
   }
 `;
 
-const STYLES_INPUT_NO_OUTLINE = css`
-  ${INPUT_STYLES}
-  padding: 0 24px 0 24px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15),
-    inset 0 0 0 1px ${Constants.system.darkGray};
-
-  ::placeholder {
-    /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: ${Constants.system.darkGray};
-    opacity: 1; /* Firefox */
-  }
-
-  :-ms-input-placeholder {
-    /* Internet Explorer 10-11 */
-    color: ${Constants.system.darkGray};
-  }
-
-  ::-ms-input-placeholder {
-    /* Microsoft Edge */
-    color: ${Constants.system.darkGray};
-  }
-`;
-
 const STYLES_ICON = css`
   box-sizing: border-box;
   position: absolute;
@@ -173,6 +148,7 @@ export class Input extends React.Component {
   };
 
   render() {
+    console.log(this.props.style);
     return (
       <div
         css={
@@ -192,7 +168,7 @@ export class Input extends React.Component {
             ref={(c) => {
               this._input = c;
             }}
-            css={this.props.noOutline ? STYLES_INPUT_NO_OUTLINE : STYLES_INPUT}
+            css={STYLES_INPUT}
             value={this.props.value}
             name={this.props.name}
             type={this.props.type}
@@ -205,7 +181,6 @@ export class Input extends React.Component {
             disabled={this.props.disabled}
             readOnly={this.props.readOnly}
             style={{
-              ...this.props.style,
               boxShadow: this.props.validation
                 ? `0 1px 4px rgba(0, 0, 0, 0.07), inset 0 0 0 2px ${
                     INPUT_COLOR_MAP[this.props.validation]
@@ -213,6 +188,7 @@ export class Input extends React.Component {
                 : null,
               paddingRight:
                 this.props.copyable || this.props.icon ? "32px" : "24px",
+              ...this.props.style,
             }}
           />
           <div

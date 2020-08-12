@@ -25,10 +25,11 @@ const STYLES_BACKGROUND = css`
 `;
 
 const STYLES_MODAL = css`
+  box-sizing: border-box;
   position: relative;
-  max-width: 568px;
+  max-width: 680px;
   width: 100%;
-  border-radius: 4px;
+  border-radius: 12px;
   background-color: ${Constants.system.white};
 `;
 
