@@ -1,11 +1,8 @@
 import * as React from "react";
 import * as Constants from "~/common/constants";
 import * as SVG from "~/common/svg";
-import * as Strings from "~/common/strings";
 
 import { css } from "@emotion/react";
-import { Boundary } from "~/components/system/components/fragments/Boundary";
-import { Input } from "~/components/system/components/Input";
 
 const STYLES_DROPDOWN_CONTAINER = css`
   box-sizing: border-box;
@@ -27,7 +24,11 @@ const STYLES_DROPDOWN_ITEM = css`
   box-sizing: border-box;
   padding: 8px 24px;
   font-size: 0.8em;
-  cursor: pointer;
+  border-radius: 12px;
+
+  :hover {
+    background-color: ${Constants.system.foreground} !important;
+  }
 `;
 
 const STYLES_INPUT = css`
@@ -97,18 +98,13 @@ export class InputMenu extends React.Component {
   };
 
   _handleSelect = (index) => {
-    this.props.onChange({
+    let e = {
       target: {
         value: this.props.options[index].value,
         name: this.props.name,
       },
-    });
-    this.props.onInputChange({
-      target: {
-        value: this.props.options[index].name,
-        name: this.props.name,
-      },
-    });
+    };
+    this.props.onChange(e);
   };
 
   _handleDocumentKeydown = (e) => {
@@ -118,34 +114,35 @@ export class InputMenu extends React.Component {
     } else if (e.keyCode === 9) {
       this._handleDelete();
     } else if (e.keyCode === 40) {
-      //down -- this one doesn't jump properly
       if (this.state.selectedIndex < this.props.options.length - 1) {
         let listElem = this._optionRoot.children[this.state.selectedIndex + 1];
         let elemRect = listElem.getBoundingClientRect();
         let rootRect = this._optionRoot.getBoundingClientRect();
         if (elemRect.bottom > rootRect.bottom) {
           this._optionRoot.scrollTop =
-            bottomPos - this._optionRoot.offsetHeight;
+            listElem.offsetTop +
+            listElem.offsetHeight -
+            this._optionRoot.offsetHeight;
         }
         this.setState({ selectedIndex: this.state.selectedIndex + 1 });
       }
       e.preventDefault();
     } else if (e.keyCode === 38) {
-      //up -- this one works, but add in something that ignores the "on mouse enter" for the case where it moves by jumping this way
       if (this.state.selectedIndex > 0) {
         let listElem = this._optionRoot.children[this.state.selectedIndex - 1];
         let elemRect = listElem.getBoundingClientRect();
         let rootRect = this._optionRoot.getBoundingClientRect();
-        let topPos = listElem.offsetTop;
         if (elemRect.top < rootRect.top) {
-          console.log("offset");
-          this._optionRoot.scrollTop = topPos;
+          this._optionRoot.scrollTop = listElem.offsetTop;
         }
         this.setState({ selectedIndex: this.state.selectedIndex - 1 });
       }
       e.preventDefault();
     } else if (e.keyCode === 13) {
-      if (this.props.options.length > this.state.selectedIndex) {
+      if (
+        this.props.options.length > this.state.selectedIndex &&
+        this.state.selectedIndex !== -1
+      ) {
         this._handleSelect(this.state.selectedIndex);
       }
       e.preventDefault();
@@ -186,14 +183,7 @@ export class InputMenu extends React.Component {
                     this.state.selectedIndex === i
                       ? Constants.system.foreground
                       : Constants.system.white,
-                  borderRadius: "12px",
                   ...this.props.itemStyle,
-                }}
-                onClick={() => {
-                  this._handleSelect(i);
-                }}
-                onMouseEnter={() => {
-                  this.setState({ selectedIndex: i });
                 }}
               >
                 {each.name}

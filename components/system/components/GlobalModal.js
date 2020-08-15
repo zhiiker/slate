@@ -20,7 +20,7 @@ const STYLES_BACKGROUND = css`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(45, 41, 38, 0.6);
+  background-color: rgba(0, 0, 0, 0.2);
   z-index: ${Constants.zindex.modal};
 `;
 

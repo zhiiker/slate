@@ -3,6 +3,8 @@ import * as Constants from "~/common/constants";
 import * as SVG from "~/common/svg";
 import * as Strings from "~/common/strings";
 
+import MiniSearch from "minisearch";
+
 import { css } from "@emotion/react";
 import { InputMenu } from "~/components/system/components/InputMenu";
 import { GlobalModal } from "~/components/system/components/GlobalModal";
@@ -13,56 +15,74 @@ const fileImg =
 
 let items = [
   {
-    type: "user",
     id: "0cc3732d-d572-4ddd-900e-483dd1f4cbfb",
-    username: "martina",
-    photo:
+    type: "user",
+    name: "Haris Butt",
+    username: "haris",
+    url:
       "https://hub.textile.io/ipfs/bafybeiguo2uhd63reslbqkkgsqedgeikhtuwn5lzqpnqzluoaa3rnkfcvi",
-    name: "Martina Long",
   },
   {
-    type: "slate",
     id: "c32b95ed-9472-4b01-acc2-0fb8303dc140",
-    slatename: "Doggos",
-    ownerId: "296e0692-209d-4bd3-b736-43cdb8e07a3f",
-    username: "probablyharis",
-    urls: [
-      "https://hub.textile.io/ipfs/bafybeicuz5wrxonu7ud6eskrnshxb66ksg3ncu3ie776xuiydlxrkfuvmu",
-      "https://hub.textile.io/ipfs/bafkreicb2lookm56omsfjwuwuziwftizmdsj4oneveuqiqlu6k5hc7j5nq",
-      "https://hub.textile.io/ipfs/bafybeicp3x3poprnrsxhnqscsiuobxejxsbcsu2t4yhte6qmcofjvjqbn4",
+    type: "slate",
+    name: "Doggos",
+    username: "martinalong",
+    url: [
+      {
+        type: "image",
+        url:
+          "https://hub.textile.io/ipfs/bafybeicuz5wrxonu7ud6eskrnshxb66ksg3ncu3ie776xuiydlxrkfuvmu",
+      },
+      {
+        type: "image",
+        url:
+          "https://hub.textile.io/ipfs/bafkreicb2lookm56omsfjwuwuziwftizmdsj4oneveuqiqlu6k5hc7j5nq",
+      },
+      {
+        type: "file",
+        url:
+          "https://hub.textile.io/ipfs/bafkreic3w24qwy6nxvwzidwvdvmyfeyha5w2uyk6rycli5utdquvafgosq",
+      },
     ],
-    objectCount: 8,
   },
   {
+    id: "data-75384245-0a6e-4e53-938e-781895556265",
     type: "image",
     name: "butter.jpg",
-    id: "data-75384245-0a6e-4e53-938e-781895556265",
-    ownerId: "9226b377-7aa9-40cb-a2c6-31ca67c0aa8f",
     username: "jim",
     url:
       "https://hub.textile.io/ipfs/bafybeidcn5ucp3mt5bl7vllkeo7uai24ja4ra5i7wctl22ffq2rev7z7au",
   },
   {
+    id: "data-bc1bd1c8-5db4-448d-ab35-f4d4866b9fa2",
     type: "file",
     name: "seneca-on-the-shortness-of-life.pdf",
-    id: "data-bc1bd1c8-5db4-448d-ab35-f4d4866b9fa2",
-    ownerId: "b6fb6595-6010-4a4d-80cf-5b4e48bba9f4",
     username: "colin",
     url:
       "https://hub.textile.io/ipfs/bafkreic3w24qwy6nxvwzidwvdvmyfeyha5w2uyk6rycli5utdquvafgosq",
   },
   {
-    type: "slate",
     id: "0ba6d7ab-7b1c-4420-bb42-4e66b82df099",
-    slatename: "Landscapes",
-    ownerId: "296e0692-209d-4bd3-b736-43cdb8e07a3f",
-    username: "jason",
-    urls: [
-      "https://hub.textile.io/ipfs/bafybeihxn5non5wtt63e2vhk7am4xpmdh3fnmya2vx4jfk52t2jdqudztq",
-      "https://hub.textile.io/ipfs/bafybeiddiv44vobree4in7n6gawqzlelpyqwoji6appb6dzpgxzrdonepq",
-      "https://hub.textile.io/ipfs/bafkreih2mw66pmi4mvcxb32rhiyas7tohafaiez54lxvy652pdcfmgxrba",
+    type: "slate",
+    name: "Meta",
+    username: "haris",
+    url: [
+      {
+        type: "image",
+        url:
+          "https://hub.textile.io/ipfs/bafybeihxn5non5wtt63e2vhk7am4xpmdh3fnmya2vx4jfk52t2jdqudztq",
+      },
+      {
+        type: "image",
+        url:
+          "https://hub.textile.io/ipfs/bafybeiddiv44vobree4in7n6gawqzlelpyqwoji6appb6dzpgxzrdonepq",
+      },
+      {
+        type: "image",
+        url:
+          "https://hub.textile.io/ipfs/bafkreih2mw66pmi4mvcxb32rhiyas7tohafaiez54lxvy652pdcfmgxrba",
+      },
     ],
-    objectCount: 27,
   },
 ];
 
@@ -121,18 +141,20 @@ const STYLES_PROFILE_IMAGE = css`
 
 const UserEntry = ({ item }) => {
   return (
-    <div css={STYLES_ENTRY}>
-      <div css={STYLES_USER_ENTRY_CONTAINER}>
-        <div
-          style={{ backgroundImage: `url(${item.photo})` }}
-          css={STYLES_PROFILE_IMAGE}
-        />
-        <strong>{item.name}</strong>
-        <a css={STYLES_LINK} href={`/${item.username}`}>
-          @{item.username}
-        </a>
+    <a css={STYLES_LINK} href={`/${item.username}`}>
+      <div css={STYLES_ENTRY}>
+        <div css={STYLES_USER_ENTRY_CONTAINER}>
+          <div
+            style={{ backgroundImage: `url(${item.url})` }}
+            css={STYLES_PROFILE_IMAGE}
+          />
+          <strong>{item.name}</strong>
+          <a css={STYLES_LINK_HOVER} href={`/${item.username}`}>
+            @{item.username}
+          </a>
+        </div>
       </div>
-    </div>
+    </a>
   );
 };
 
@@ -165,58 +187,82 @@ const STYLES_SLATE_IMAGE = css`
 const STYLES_LINK = css`
   color: ${Constants.system.black};
   text-decoration: none;
+`;
+
+const STYLES_LINK_HOVER = css`
+  color: ${Constants.system.black};
+  text-decoration: none;
 
   :hover {
     color: ${Constants.system.brand};
   }
 `;
 
+const STYLES_ALTERNATE_IMAGE = css`
+  position: absolute;
+  background-size: cover;
+  background-position: 50% 50%;
+  height: 72px;
+  width: 72px;
+`;
+
 const SlateEntry = ({ item }) => {
+  let slug = item.name.toLowerCase().split(" ").join("-");
   return (
-    <div css={STYLES_ENTRY}>
-      <div css={STYLES_SLATE_ENTRY_CONTAINER}>
-        <div css={STYLES_ICON_CIRCLE}>
-          <SVG.Slate2 height="16px" />
+    <a css={STYLES_LINK} href={`/${item.username}/${slug}`}>
+      <div css={STYLES_ENTRY}>
+        <div css={STYLES_SLATE_ENTRY_CONTAINER}>
+          <div css={STYLES_ICON_CIRCLE}>
+            <SVG.Slate2 height="16px" />
+          </div>
+          <strong>{item.name}</strong>
+          <div>
+            <a css={STYLES_LINK_HOVER} href={`/${item.username}`}>
+              @{item.username}
+            </a>
+          </div>
         </div>
-        <strong>{item.slatename}</strong>
-        <div>
-          <a css={STYLES_LINK} href={`/${item.username}`}>
-            @{item.username}
-          </a>
+        <div css={STYLES_SLATE_IMAGES_CONTAINER}>
+          {item.url.map((each) => (
+            <div
+              style={{
+                backgroundImage: `url(${
+                  each.type === "image" ? each.url : fileImg
+                })`,
+              }}
+              css={STYLES_SLATE_IMAGE}
+            />
+          ))}
         </div>
       </div>
-      <div css={STYLES_SLATE_IMAGES_CONTAINER}>
-        {item.urls.map((link) => (
-          <div
-            style={{ backgroundImage: `url(${link})` }}
-            css={STYLES_SLATE_IMAGE}
-          />
-        ))}
-      </div>
-    </div>
+    </a>
   );
 };
 
 const FileEntry = ({ item }) => {
   return (
-    <div css={STYLES_ENTRY}>
-      <div css={STYLES_USER_ENTRY_CONTAINER}>
-        <div css={STYLES_ICON_CIRCLE}>
-          <SVG.Folder2 height="16px" />
+    <a css={STYLES_LINK} href={item.url}>
+      <div css={STYLES_ENTRY}>
+        <div css={STYLES_USER_ENTRY_CONTAINER}>
+          <div css={STYLES_ICON_CIRCLE}>
+            <SVG.Folder2 height="16px" />
+          </div>
+          <strong>{item.name}</strong>
+          <a href={`/${item.username}`} css={STYLES_LINK_HOVER}>
+            @{item.username}
+          </a>
         </div>
-        <strong>{item.name}</strong>
-        <a href={`/${item.username}`} css={STYLES_LINK}>
-          @{item.username}
-        </a>
+        <div
+          style={{
+            backgroundImage: `url(${
+              item.type === "image" ? item.url : fileImg
+            })`,
+            margin: "8px 0px 8px 40px",
+          }}
+          css={STYLES_SLATE_IMAGE}
+        />
       </div>
-      <div
-        style={{
-          backgroundImage: `url(${item.type === "image" ? item.url : fileImg})`,
-          margin: "8px 0px 8px 40px",
-        }}
-        css={STYLES_SLATE_IMAGE}
-      />
-    </div>
+    </a>
   );
 };
 
@@ -227,45 +273,48 @@ class SpotlightSearchContent extends React.Component {
     inputValue: "",
   };
 
-  componentDidMount = () => {
-    let options = [];
-    for (let item of items) {
-      if (item.type === "user") {
-        options.push({
-          value: `/${item.username}`,
-          name: <UserEntry item={item} />,
-        });
-      } else if (item.type === "slate") {
-        options.push({
-          value: `/${item.username}/${item.slatename}`,
-          name: <SlateEntry item={item} />,
-        });
-      } else if (item.type === "image" || item.type == "file") {
-        options.push({
-          value: `${item.url}`,
-          name: <FileEntry item={item} />,
-        });
-      }
-    }
-    this.setState({ options });
+  componentDidMount = async () => {
+    //let documents = await getDocuments();
+    this.miniSearch = new MiniSearch({
+      fields: ["name", "username"], // fields to index for full-text search
+      storeFields: ["type", "name", "username", "url"], // fields to return with search results
+      searchOptions: {
+        boost: { name: 2 },
+        fuzzy: 0.2,
+      },
+    });
+    //this.miniSearch.addAll(documents);
+    this.miniSearch.addAll(items);
   };
 
   _handleChange = (e) => {
-    // window.location.href = e.target.value;
+    if (e.target.value !== null) {
+      if (e.target.value.substring(0, 1) === "/") {
+        window.location.pathname = e.target.value;
+      } else {
+        window.location.href = e.target.value;
+      }
+    }
   };
+
+  //prevent backgroound from scrolling
 
   _handleInputChange = (e) => {
     this.setState({ inputValue: e.target.value }, () => {
+      console.log(this.state.inputValue);
+      let results = this.miniSearch.search(this.state.inputValue);
+      console.log(results);
       let options = [];
-      for (let item of items) {
+      for (let item of results) {
         if (item.type === "user") {
           options.push({
             value: `/${item.username}`,
             name: <UserEntry item={item} />,
           });
         } else if (item.type === "slate") {
+          let slug = item.name.toLowerCase().split(" ").join("-");
           options.push({
-            value: `/${item.username}/${item.slatename}`,
+            value: `/${item.username}/${slug}`,
             name: <SlateEntry item={item} />,
           });
         } else if (item.type === "image" || item.type == "file") {
