@@ -198,14 +198,6 @@ const STYLES_LINK_HOVER = css`
   }
 `;
 
-const STYLES_ALTERNATE_IMAGE = css`
-  position: absolute;
-  background-size: cover;
-  background-position: 50% 50%;
-  height: 72px;
-  width: 72px;
-`;
-
 const SlateEntry = ({ item }) => {
   let slug = item.name.toLowerCase().split(" ").join("-");
   return (
@@ -296,8 +288,6 @@ class SpotlightSearchContent extends React.Component {
       }
     }
   };
-
-  //prevent backgroound from scrolling
 
   _handleInputChange = (e) => {
     this.setState({ inputValue: e.target.value }, () => {
