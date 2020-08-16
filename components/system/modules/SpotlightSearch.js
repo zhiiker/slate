@@ -7,7 +7,6 @@ import MiniSearch from "minisearch";
 
 import { css } from "@emotion/react";
 import { InputMenu } from "~/components/system/components/InputMenu";
-import { GlobalModal } from "~/components/system/components/GlobalModal";
 import { dispatchCustomEvent } from "~/common/custom-events";
 
 const fileImg =

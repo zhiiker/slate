@@ -8,7 +8,7 @@ createUserSearchResult = (user) => {
   };
 };
 
-createSlateSearchResult = (slate, username) => {
+createSlateSearchResult = (slate) => {
   let files;
   if (slate.data.objects.length > 3) {
     files = slate.data.objects.slice(0, 3);
@@ -19,7 +19,7 @@ createSlateSearchResult = (slate, username) => {
     id: slate.id,
     type: "slate",
     name: slate.slatename,
-    username: username,
+    username: slate.user.username,
     url: files.map((file) => {
       return {
         type: file.type
@@ -33,12 +33,12 @@ createSlateSearchResult = (slate, username) => {
   };
 };
 
-createFileSearchResult = (file, username) => {
+createFileSearchResult = (file) => {
   return {
     id: file.id,
     type: file.type ? (file.type.includes("image") ? "image" : "file") : "file",
     name: file.name,
-    username: username,
+    username: file.user.username,
     url: file.url,
   };
 };
