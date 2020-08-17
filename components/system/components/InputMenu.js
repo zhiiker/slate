@@ -22,12 +22,13 @@ const STYLES_DROPDOWN = css`
 
 const STYLES_DROPDOWN_ITEM = css`
   box-sizing: border-box;
-  padding: 8px 24px;
+  padding: 8px;
   font-size: 0.8em;
   border-radius: 12px;
+  border: 1px solid ${Constants.system.white};
 
   :hover {
-    background-color: ${Constants.system.foreground} !important;
+    border-color: ${Constants.system.border} !important;
   }
 `;
 
@@ -70,6 +71,7 @@ const STYLES_INPUT = css`
 `;
 
 export class InputMenu extends React.Component {
+  _input;
   _optionRoot;
 
   state = {
@@ -78,6 +80,7 @@ export class InputMenu extends React.Component {
 
   componentDidMount = () => {
     window.addEventListener("keydown", this._handleDocumentKeydown);
+    this._input.focus();
   };
 
   componentWillUnmount = () => {
@@ -159,13 +162,16 @@ export class InputMenu extends React.Component {
             placeholder={this.props.placeholder}
             style={this.props.inputStyle}
             onChange={this._handleInputChange}
+            ref={(c) => {
+              this._input = c;
+            }}
           />
           <SVG.Search
             height="20px"
             style={{ position: "absolute", left: "12px", top: "10px" }}
           />
         </div>
-        {this.props.options && this.props.options.length > 0 ? (
+        {
           <div
             data-menu
             ref={(c) => {
@@ -174,14 +180,17 @@ export class InputMenu extends React.Component {
             css={STYLES_DROPDOWN}
             style={this.props.style}
           >
-            {this.props.options.map((each, i) => (
+            {(this.props.options && this.props.options.length
+              ? this.props.options
+              : this.props.defaultOptions
+            ).map((each, i) => (
               <div
                 key={each.value}
                 css={STYLES_DROPDOWN_ITEM}
                 style={{
-                  backgroundColor:
+                  borderColor:
                     this.state.selectedIndex === i
-                      ? Constants.system.foreground
+                      ? Constants.system.border
                       : Constants.system.white,
                   ...this.props.itemStyle,
                 }}
@@ -190,7 +199,7 @@ export class InputMenu extends React.Component {
               </div>
             ))}
           </div>
-        ) : null}
+        }
       </div>
     );
   }

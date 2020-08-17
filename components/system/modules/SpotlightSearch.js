@@ -29,16 +29,20 @@ let items = [
     url: [
       {
         type: "image",
+        name: "tuna.png",
         url:
           "https://hub.textile.io/ipfs/bafybeicuz5wrxonu7ud6eskrnshxb66ksg3ncu3ie776xuiydlxrkfuvmu",
       },
       {
         type: "image",
+        name: "khaleesi.jpg",
         url:
           "https://hub.textile.io/ipfs/bafkreicb2lookm56omsfjwuwuziwftizmdsj4oneveuqiqlu6k5hc7j5nq",
       },
       {
         type: "file",
+        name:
+          "Seneca - On the Shortness of Life and other things relating to philosophy and culture of the greeks",
         url:
           "https://hub.textile.io/ipfs/bafkreic3w24qwy6nxvwzidwvdvmyfeyha5w2uyk6rycli5utdquvafgosq",
       },
@@ -68,16 +72,19 @@ let items = [
     url: [
       {
         type: "image",
+        name: "landscape1",
         url:
           "https://hub.textile.io/ipfs/bafybeihxn5non5wtt63e2vhk7am4xpmdh3fnmya2vx4jfk52t2jdqudztq",
       },
       {
         type: "image",
+        name: "landscape2",
         url:
           "https://hub.textile.io/ipfs/bafybeiddiv44vobree4in7n6gawqzlelpyqwoji6appb6dzpgxzrdonepq",
       },
       {
         type: "image",
+        name: "landscape3",
         url:
           "https://hub.textile.io/ipfs/bafkreih2mw66pmi4mvcxb32rhiyas7tohafaiez54lxvy652pdcfmgxrba",
       },
@@ -95,27 +102,12 @@ const STYLES_ICON_CIRCLE = css`
   justify-content: center;
 `;
 
-const STYLES_ANCHOR_ICON = css`
-  height: 16px;
-  color: ${Constants.system.black};
-`;
-
-const STYLES_ANCHOR_BOX = css`
-  height: 20px;
-  width: 20px;
-  cursor: pointer;
-`;
-
 const STYLES_MODAL = css`
   width: 95vw;
   max-width: 600px;
   height: 60vh;
   padding: 24px;
 `;
-
-const STYLES_INPUT = {
-  marginBottom: "16px",
-};
 
 const STYLES_INPUT_MENU = {
   height: "calc(100% - 80px)",
@@ -197,6 +189,20 @@ const STYLES_LINK_HOVER = css`
   }
 `;
 
+const STYLES_FILE_ALTERNATE = css`
+  display: flex;
+  justify-content: center;
+  background-color: ${Constants.system.foreground};
+  height: 72px;
+  width: 72px;
+  padding: 4px;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  font-size: 0.7em;
+  overflow: hidden;
+  line-height: 17px;
+`;
+
 const SlateEntry = ({ item }) => {
   let slug = item.name.toLowerCase().split(" ").join("-");
   return (
@@ -214,16 +220,20 @@ const SlateEntry = ({ item }) => {
           </div>
         </div>
         <div css={STYLES_SLATE_IMAGES_CONTAINER}>
-          {item.url.map((each) => (
-            <div
-              style={{
-                backgroundImage: `url(${
-                  each.type === "image" ? each.url : fileImg
-                })`,
-              }}
-              css={STYLES_SLATE_IMAGE}
-            />
-          ))}
+          {item.url.map((each) =>
+            each.type === "image" ? (
+              <div
+                style={{
+                  backgroundImage: `url(${
+                    each.type === "image" ? each.url : fileImg
+                  })`,
+                }}
+                css={STYLES_SLATE_IMAGE}
+              />
+            ) : (
+              <div css={STYLES_FILE_ALTERNATE}>{each.name}</div>
+            )
+          )}
         </div>
       </div>
     </a>
@@ -256,6 +266,24 @@ const FileEntry = ({ item }) => {
     </a>
   );
 };
+
+const STYLES_DROPDOWN_ITEM = css`
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const options = [
+  { name: "Send money", link: null, icon: <SVG.Wallet2 height="16px" /> },
+  { name: "New slate", link: null, icon: <SVG.Slate2 height="16px" /> },
+  { name: "Upload file", link: null, icon: <SVG.Folder2 height="16px" /> },
+  {
+    name: "Settings",
+    link: null,
+    icon: <SVG.Tool2 height="16px" />,
+  },
+];
 
 class SpotlightSearchContent extends React.Component {
   state = {
@@ -290,9 +318,7 @@ class SpotlightSearchContent extends React.Component {
 
   _handleInputChange = (e) => {
     this.setState({ inputValue: e.target.value }, () => {
-      console.log(this.state.inputValue);
       let results = this.miniSearch.search(this.state.inputValue);
-      console.log(results);
       let options = [];
       for (let item of results) {
         if (item.type === "user") {
@@ -331,13 +357,38 @@ class SpotlightSearchContent extends React.Component {
           onInputChange={this._handleInputChange}
           inputValue={this.state.inputValue}
           style={STYLES_INPUT_MENU}
-          inputStyle={STYLES_INPUT}
-          itemStyle={{ padding: "0px 8px" }}
+          defaultOptions={options.map((option) => {
+            return {
+              name: (
+                <div css={STYLES_DROPDOWN_ITEM}>
+                  <div
+                    css={STYLES_ICON_CIRCLE}
+                    style={{ height: "40px", width: "40px" }}
+                  >
+                    {option.icon}
+                  </div>
+                  <div>{option.name}</div>
+                </div>
+              ),
+              value: option.name,
+            };
+          })}
         />
       </div>
     );
   }
 }
+
+const STYLES_ANCHOR_ICON = css`
+  height: 16px;
+  color: ${Constants.system.black};
+`;
+
+const STYLES_ANCHOR_BOX = css`
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+`;
 
 export class SpotlightSearch extends React.Component {
   _handleCreate = (e) => {

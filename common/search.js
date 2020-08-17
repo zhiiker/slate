@@ -27,6 +27,7 @@ createSlateSearchResult = (slate) => {
             ? "image"
             : "file"
           : "file",
+        name: file.name,
         url: file.url,
       };
     }),
