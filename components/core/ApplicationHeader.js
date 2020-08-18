@@ -4,6 +4,8 @@ import * as SVG from "~/common/svg";
 
 import { css } from "@emotion/react";
 import { Tooltip } from "react-tippy";
+import { SpotlightSearch } from "~/components/system/modules/SpotlightSearch";
+import { dispatchCustomEvent } from "~/common/custom-events";
 
 const STYLES_ICON_ELEMENT = css`
   height: 40px;
@@ -68,6 +70,13 @@ const STYLES_RIGHT = css`
 `;
 
 export default class ApplicationHeader extends React.Component {
+  _handleCreateSearch = (e) => {
+    dispatchCustomEvent({
+      name: "create-modal",
+      detail: { modal: <SpotlightSearch /> },
+    });
+  };
+
   render() {
     const isBackDisabled =
       this.props.currentIndex === 0 || this.props.history.length < 2;
@@ -112,7 +121,7 @@ export default class ApplicationHeader extends React.Component {
           <span
             css={STYLES_ICON_ELEMENT}
             style={{ marginLeft: 24 }}
-            onClick={() => window.alert("TODO: SPOTLIGHT SEARCH")}
+            onClick={this._handleCreateSearch}
           >
             <Tooltip animation="fade" animateFill={false} title="Coming Soon">
               <SVG.Search height="20px" />

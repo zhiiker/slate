@@ -546,6 +546,7 @@ export default class ApplicationPage extends React.Component {
             {scene}
           </ApplicationLayout>
           <System.GlobalCarousel />
+          <System.GlobalModal />
         </WebsitePrototypeWrapper>
       </React.Fragment>
     );

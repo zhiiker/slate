@@ -285,7 +285,7 @@ const options = [
   },
 ];
 
-class SpotlightSearchContent extends React.Component {
+export class SpotlightSearch extends React.Component {
   state = {
     options: [],
     value: null,
@@ -390,11 +390,11 @@ const STYLES_ANCHOR_BOX = css`
   cursor: pointer;
 `;
 
-export class SpotlightSearch extends React.Component {
+export class SpotlightSearchAnchor extends React.Component {
   _handleCreate = (e) => {
     dispatchCustomEvent({
       name: "create-modal",
-      detail: { modal: <SpotlightSearchContent /> },
+      detail: { modal: <SpotlightSearch /> },
     });
   };
 
