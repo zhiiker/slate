@@ -24,8 +24,11 @@ export default class SceneSlate extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const isNewSlateScene = prevProps.current.slatename !== this.props.current.slatename;
-    const isUpdated = this.props.current.data.objects.length !== prevProps.current.data.objects.length;
+    const isNewSlateScene =
+      prevProps.current.slatename !== this.props.current.slatename;
+    const isUpdated =
+      this.props.current.data.objects.length !==
+      prevProps.current.data.objects.length;
 
     if (isNewSlateScene || isUpdated) {
       this.setState({
@@ -72,7 +75,9 @@ export default class SceneSlate extends React.Component {
           return {
             onDelete: this._handleDelete,
             id: each.id,
-            component: <MediaObject key={each.id} useImageFallback data={each} />,
+            component: (
+              <MediaObject key={each.id} useImageFallback data={each} />
+            ),
           };
         }),
       },
@@ -149,7 +154,10 @@ export default class SceneSlate extends React.Component {
       <ScenePage style={{ padding: `88px 24px 128px 24px` }}>
         <System.H1 style={{ marginBottom: 24, paddingLeft: 24 }}>
           {slatename}{" "}
-          <CircleButtonLight onClick={this._handleAdd} style={{ marginLeft: 16, marginRight: 12 }}>
+          <CircleButtonLight
+            onClick={this._handleAdd}
+            style={{ marginLeft: 16, marginRight: 12 }}
+          >
             <SVG.Plus height="16px" />
           </CircleButtonLight>
           <CircleButtonLight onClick={this._handleShowSettings}>

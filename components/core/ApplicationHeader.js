@@ -73,7 +73,7 @@ export default class ApplicationHeader extends React.Component {
   _handleCreateSearch = (e) => {
     dispatchCustomEvent({
       name: "create-modal",
-      detail: { modal: <SpotlightSearch /> },
+      detail: { modal: <SpotlightSearch onAction={this.props.onAction} /> },
     });
   };
 

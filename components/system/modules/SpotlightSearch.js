@@ -131,6 +131,7 @@ const STYLES_PROFILE_IMAGE = css`
 `;
 
 const UserEntry = ({ item }) => {
+  //TODO: change from link to onAction once profiles are supported in-client
   return (
     <a css={STYLES_LINK} href={`/${item.username}`}>
       <div css={STYLES_ENTRY}>
@@ -203,10 +204,15 @@ const STYLES_FILE_ALTERNATE = css`
   line-height: 17px;
 `;
 
-const SlateEntry = ({ item }) => {
+const SlateEntry = ({ item, onAction }) => {
   let slug = item.name.toLowerCase().split(" ").join("-");
+  //TODO: pass in that slate's data as data to onAction
   return (
-    <a css={STYLES_LINK} href={`/${item.username}/${slug}`}>
+    <div
+      onClick={() => {
+        onAction({ action: "NAVIGATE", value: 17 });
+      }}
+    >
       <div css={STYLES_ENTRY}>
         <div css={STYLES_SLATE_ENTRY_CONTAINER}>
           <div css={STYLES_ICON_CIRCLE}>
@@ -236,13 +242,18 @@ const SlateEntry = ({ item }) => {
           )}
         </div>
       </div>
-    </a>
+    </div>
   );
 };
 
-const FileEntry = ({ item }) => {
+const FileEntry = ({ item, onAction }) => {
   return (
-    <a css={STYLES_LINK} href={item.url}>
+    <div
+      css={STYLES_LINK}
+      onClick={() => {
+        onAction({ action: "NAVIGATE", value: 15, data: { url: item.url } });
+      }}
+    >
       <div css={STYLES_ENTRY}>
         <div css={STYLES_USER_ENTRY_CONTAINER}>
           <div css={STYLES_ICON_CIRCLE}>
@@ -263,7 +274,7 @@ const FileEntry = ({ item }) => {
           css={STYLES_SLATE_IMAGE}
         />
       </div>
-    </a>
+    </div>
   );
 };
 
@@ -275,13 +286,35 @@ const STYLES_DROPDOWN_ITEM = css`
 `;
 
 const options = [
-  { name: "Send money", link: null, icon: <SVG.Wallet2 height="16px" /> },
-  { name: "New slate", link: null, icon: <SVG.Slate2 height="16px" /> },
-  { name: "Upload file", link: null, icon: <SVG.Folder2 height="16px" /> },
   {
-    name: "Settings",
+    name: "Send money",
+    link: null,
+    icon: <SVG.Wallet2 height="16px" />,
+    action: { type: "NAVIGATE", value: 2 },
+  },
+  {
+    name: "New slate",
+    link: null,
+    icon: <SVG.Slate2 height="16px" />,
+    action: { type: "NAVIGATE", value: 3 },
+  },
+  {
+    name: "Upload file",
+    link: null,
+    icon: <SVG.Folder2 height="16px" />,
+    action: { type: "NAVIGATE", value: "data" },
+  },
+  {
+    name: "Account settings",
     link: null,
     icon: <SVG.Tool2 height="16px" />,
+    action: { type: "NAVIGATE", value: 13 },
+  },
+  {
+    name: "Filecoin settings",
+    link: null,
+    icon: <SVG.Tool2 height="16px" />,
+    action: { type: "NAVIGATE", value: 14 },
   },
 ];
 
@@ -324,22 +357,30 @@ export class SpotlightSearch extends React.Component {
         if (item.type === "user") {
           options.push({
             value: `/${item.username}`,
-            name: <UserEntry item={item} />,
+            name: <UserEntry item={item} onAction={this.props.onAction} />,
           });
         } else if (item.type === "slate") {
           let slug = item.name.toLowerCase().split(" ").join("-");
           options.push({
             value: `/${item.username}/${slug}`,
-            name: <SlateEntry item={item} />,
+            name: <SlateEntry item={item} onAction={this.props.onAction} />,
           });
         } else if (item.type === "image" || item.type == "file") {
           options.push({
             value: `${item.url}`,
-            name: <FileEntry item={item} />,
+            name: <FileEntry item={item} onAction={this.props.onAction} />,
           });
         }
       }
       this.setState({ options });
+    });
+  };
+
+  _handleAction = (action) => {
+    this.props.onAction(action);
+    dispatchCustomEvent({
+      name: "delete-modal",
+      detail: {},
     });
   };
 
@@ -360,7 +401,10 @@ export class SpotlightSearch extends React.Component {
           defaultOptions={options.map((option) => {
             return {
               name: (
-                <div css={STYLES_DROPDOWN_ITEM}>
+                <div
+                  css={STYLES_DROPDOWN_ITEM}
+                  onClick={() => this._handleAction(option.action)}
+                >
                   <div
                     css={STYLES_ICON_CIRCLE}
                     style={{ height: "40px", width: "40px" }}
