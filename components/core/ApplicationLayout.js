@@ -183,6 +183,7 @@ export default class ApplicationLayout extends React.Component {
             ref={(c) => {
               this._body = c;
             }}
+            id="slate-client-body"
           >
             {this.props.children}
           </div>

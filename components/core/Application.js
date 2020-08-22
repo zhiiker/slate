@@ -377,8 +377,9 @@ export default class ApplicationPage extends React.Component {
   };
 
   _handleNavigateTo = (next, data = null) => {
-    this.state.history[this.state.currentIndex].scrollTop = window.scrollY;
-    this.state.history[this.state.currentIndex].data = data;
+    let body = document.getElementById("slate-client-body");
+    this.state.history[this.state.currentIndex].scrollTop = body.scrollTop; //window.scrollY => body.scrollTop (where body is the body of the ApplicationLayout)
+    this.state.history[this.state.currentIndex].data = this.state.data; //BUG FIX: was originally = data. So it was setting it equal to the data for the next one rather than the current one
 
     if (this.state.currentIndex !== this.state.history.length - 1) {
       const adjustedArray = [...this.state.history];
@@ -391,7 +392,7 @@ export default class ApplicationPage extends React.Component {
           data,
           sidebar: null,
         },
-        () => window.scrollTo(0, 0)
+        () => body.scrollTo(0, 0)
       );
     }
 
@@ -402,12 +403,14 @@ export default class ApplicationPage extends React.Component {
         data,
         sidebar: null,
       },
-      () => window.scrollTo(0, 0)
+      () => body.scrollTo(0, 0)
     );
   };
 
   _handleBack = () => {
-    this.state.history[this.state.currentIndex].scrollTop = window.scrollY;
+    let body = document.getElementById("slate-client-body");
+    this.state.history[this.state.currentIndex].scrollTop = body.scrollTop;
+    this.state.history[this.state.currentIndex].data = this.state.data; //BUG FIX: if you go back, it doesn't save the data for that page. so if you go forward to it again, it breaks. changed data => this.state.data
 
     const next = this.state.history[this.state.currentIndex - 1];
 
@@ -419,13 +422,14 @@ export default class ApplicationPage extends React.Component {
       },
       () => {
         console.log({ next });
-        window.scrollTo(0, next.scrollTop);
+        body.scrollTo(0, next.scrollTop);
       }
     );
   };
 
   _handleForward = () => {
-    this.state.history[this.state.currentIndex].scrollTop = window.scrollY;
+    let body = document.getElementById("slate-client-body");
+    this.state.history[this.state.currentIndex].scrollTop = body.scrollTop;
 
     const next = this.state.history[this.state.currentIndex + 1];
 
@@ -437,7 +441,7 @@ export default class ApplicationPage extends React.Component {
       },
       () => {
         console.log({ next });
-        window.scrollTo(0, next.scrollTop);
+        body.scrollTo(0, next.scrollTop);
       }
     );
   };
