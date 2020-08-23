@@ -27,6 +27,7 @@ export default class Slate extends React.Component {
               type={each.type}
               onClick={() => this.props.onSelect(index)}
               url={each.url}
+              style={this.props.itemStyle}
             />
           );
         })}

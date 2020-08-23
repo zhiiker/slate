@@ -17,14 +17,13 @@ const STYLES_DROPDOWN = css`
   background-color: ${Constants.system.white};
   overflow: hidden;
   width: 100%;
-  border-radius: 12px 12px 0px 0px;
 `;
 
 const STYLES_DROPDOWN_ITEM = css`
   box-sizing: border-box;
   padding: 8px;
   font-size: 0.8em;
-  border-radius: 12px;
+  border-radius: 16px;
   border: 1px solid ${Constants.system.white};
 
   :hover {

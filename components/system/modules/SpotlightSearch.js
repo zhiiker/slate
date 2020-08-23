@@ -4,6 +4,7 @@ import * as SVG from "~/common/svg";
 import * as Strings from "~/common/strings";
 
 import MiniSearch from "minisearch";
+import Slate from "~/components/core/Slate";
 
 import { css } from "@emotion/react";
 import { InputMenu } from "~/components/system/components/InputMenu";
@@ -70,6 +71,24 @@ let items = [
     name: "Meta",
     username: "haris",
     url: [
+      {
+        type: "image",
+        name: "landscape1",
+        url:
+          "https://hub.textile.io/ipfs/bafybeihxn5non5wtt63e2vhk7am4xpmdh3fnmya2vx4jfk52t2jdqudztq",
+      },
+      {
+        type: "image",
+        name: "landscape2",
+        url:
+          "https://hub.textile.io/ipfs/bafybeiddiv44vobree4in7n6gawqzlelpyqwoji6appb6dzpgxzrdonepq",
+      },
+      {
+        type: "image",
+        name: "landscape3",
+        url:
+          "https://hub.textile.io/ipfs/bafkreih2mw66pmi4mvcxb32rhiyas7tohafaiez54lxvy652pdcfmgxrba",
+      },
       {
         type: "image",
         name: "landscape1",
@@ -205,12 +224,10 @@ const STYLES_FILE_ALTERNATE = css`
 `;
 
 const SlateEntry = ({ item, onAction }) => {
-  let slug = item.name.toLowerCase().split(" ").join("-");
-  //TODO: pass in that slate's data as data to onAction
   return (
     <div
       onClick={() => {
-        onAction({ action: "NAVIGATE", value: 17 });
+        onAction({ type: "NAVIGATE", value: 17, data: item });
       }}
     >
       <div css={STYLES_ENTRY}>
@@ -226,7 +243,22 @@ const SlateEntry = ({ item, onAction }) => {
           </div>
         </div>
         <div css={STYLES_SLATE_IMAGES_CONTAINER}>
-          {item.url.map((each) =>
+          <Slate
+            itemStyle={{
+              height: "80px",
+              width: "80px",
+              padding: "8px",
+            }}
+            onSelect={(i) => {}}
+            items={
+              !item.url || !item.url.length
+                ? []
+                : item.url.length > 5
+                ? item.url.slice(0, 5)
+                : item.url
+            }
+          />
+          {/* {item.url.map((each) =>
             each.type === "image" ? (
               <div
                 style={{
@@ -239,7 +271,7 @@ const SlateEntry = ({ item, onAction }) => {
             ) : (
               <div css={STYLES_FILE_ALTERNATE}>{each.name}</div>
             )
-          )}
+          )} */}
         </div>
       </div>
     </div>
@@ -251,7 +283,7 @@ const FileEntry = ({ item, onAction }) => {
     <div
       css={STYLES_LINK}
       onClick={() => {
-        onAction({ action: "NAVIGATE", value: 15, data: { url: item.url } });
+        onAction({ type: "NAVIGATE", value: 15, data: { url: item.url } });
       }}
     >
       <div css={STYLES_ENTRY}>

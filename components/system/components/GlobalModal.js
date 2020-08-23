@@ -29,7 +29,7 @@ const STYLES_MODAL = css`
   position: relative;
   max-width: 680px;
   width: 100%;
-  border-radius: 12px;
+  border-radius: 16px;
   background-color: ${Constants.system.white};
 `;
 
