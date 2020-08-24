@@ -381,8 +381,6 @@ export class SpotlightSearch extends React.Component {
     }
   };
 
-  //prevent backgroound from scrolling
-
   _handleInputChange = (e) => {
     this.setState({ inputValue: e.target.value }, () => {
       let results = this.miniSearch.search(this.state.inputValue);
