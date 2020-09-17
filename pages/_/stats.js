@@ -35,14 +35,12 @@ let data = [
 // Use this to determine how many tick marks to be written on X axis
 const tickNumber = 4;
 
-//Use this to choose how much of the chart is filled vertically displayMax = 500
-const yCeiling = 400;
-
-//Use this to choose how much of the chart is filled horizontally displayMax = 550
-const xWall = 500;
-
 //Use this to change how many lines create grid in graph 
 const gridLineCount = 10
+
+//Use this to determine size of graph
+const width = 800
+const height = 600
 
 import { css } from "@emotion/react";
 
@@ -442,8 +440,8 @@ export default class StatsPage extends React.Component {
             data={data}
             gridLineCount={gridLineCount}
             maxTicks={tickNumber}
-            yCeiling={yCeiling}
-            xWall={xWall}
+            height={height}
+            width={width}
           />
         </Section>
       </div>

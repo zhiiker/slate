@@ -15,11 +15,11 @@ const STYLES_GRAPH = css`
 
 const STYLES_AXIS_LINE = css`
   stroke: ${Constants.system.wall};
+  stroke-width: 2px;
 `;
 
 const STYLES_GRID_LINE = css `
   stroke: ${Constants.system.moonstone};
-  z-index: 0;
 `
 
 const STYLES_CHART_CIRCLE = css`
@@ -155,12 +155,13 @@ export default class Chart extends React.Component {
   getTicks() {
     const { data } = this.props;
     const { maxTicks } = this.props;
-    const { xWall } = this.props;
+    const { width } = this.props
+    const xWall = width * .92;
     const maxX = Date.parse(this.getMaxX());
     const minX = Date.parse(this.getMinX());
     let diffX = maxX - minX;
     let dX = xWall / diffX;
-    let bufferX = (600 - xWall) / 2;
+    let bufferX = (width - xWall) / 2;
     const allTicks = [];
     const dates = data.map((z) => {
       let t = {
@@ -228,8 +229,10 @@ export default class Chart extends React.Component {
 
   //Map through arrays of arrays of an array of objects and add x and y key/value pairs to each object.
   createCoordinates(z) {
-    const { yCeiling } = this.props;
-    const { xWall } = this.props;
+    const { width } = this.props;
+    const { height } = this.props;
+    const xWall = width * .92;
+    const yCeiling = height * .8;
     const oData = z;
     const maxX = Date.parse(this.getMaxX());
     const minX = Date.parse(this.getMinX());
@@ -239,8 +242,8 @@ export default class Chart extends React.Component {
     let diffX = maxX - minX;
     let dY = yCeiling / diffY;
     let dX = xWall / diffX;
-    let bufferY = (600 - yCeiling) / 2;
-    let bufferX = (600 - xWall) / 2;
+    let bufferY = (height - yCeiling) / 2;
+    let bufferX = (width - xWall) / 2;
 
     this.setState({ deltaX: dX });
     this.setState({ deltaY: dY });
@@ -265,12 +268,13 @@ export default class Chart extends React.Component {
 
   createGridLines = () => {
     const { gridLineCount } = this.props;
-    const { xWall } = this.props;
+    const { width } = this.props;
+    const xWall = width * .8;
     let spacer = xWall / gridLineCount;
-    let bufferX = (600 - xWall) / 2;
+    //let bufferX = (width - xWall) / 2;
     let gridLines = []
-    for(let i = 0; i < gridLineCount; i++) {
-      gridLines.push((spacer * i) + bufferX);
+    for(let i = 0; i < gridLineCount + 1; i++) {
+      gridLines.push(spacer * i);
     }
     this.setState((prevState) => ({
       gridPoints: [...prevState.gridPoints, gridLines],
@@ -286,20 +290,22 @@ export default class Chart extends React.Component {
 
 
 render() {
+    const { width } = this.props;
+    const { height } = this.props;
 
     return (
-      <div css={STYLES_GRAPH_CONTAINER}>
-        <svg css={STYLES_GRAPH} viewBox="0 0 600 600">
+      <div id="graphContainer" css={STYLES_GRAPH_CONTAINER}>
+        <svg css={STYLES_GRAPH} viewBox={ (`0 0 ${width} ${height}`) }>
           <defs>
-            <linearGradient id="backgroundGradient" x1="0" y1="100%" x2="0" y2="0">
-                <stop offset="0%" stop-color={Constants.system.pitchBlack} />
-                <stop offset="100%" stop-color={Constants.system.slate} />
-            </linearGradient>
+          <linearGradient id="Gradient1" x1="0" y1="0" x2="0" y2="100%">
+            <stop offset="0%" stop-color="#BBC42A" />
+            <stop offset="100%" stop-color="#ED6E46" />
+        </linearGradient>
           </defs>
           <g id="grid">
           {this.state.gridPoints.flat().map( g => {
             return (
-              <line css={STYLES_GRID_LINE} x1={g} y1="550" x2={g} y2="50" />
+              <line css={STYLES_GRID_LINE} stroke="url(#Gradient1)" x1={g} y1="90%" x2={g} y2="90%" />
             )
           })}
           </g>
@@ -311,8 +317,8 @@ render() {
 
             return (
               <g>
-              <line css={STYLES_AXIS_LINE} x1={tick.x} y1="550" x2={tick.x} y2="560" />
-              <text css={STYLES_CHART_TEXT} textAnchor="middle" x={tick.x} y="575">
+              <line css={STYLES_AXIS_LINE} x1={tick.x} y1="90%" x2={tick.x} y2="92%" />
+              <text css={STYLES_CHART_TEXT} textAnchor="middle" x={tick.x} y="95%">
                 {`${month} ${year}`}
               </text>
             </g>
@@ -326,7 +332,7 @@ render() {
             );
           })}
           </g>
-          <g id="lines"></g>
+          <g id="lines">
             {this.state.organizedData.flat().map( lines => {
               let coordinates = []; 
               let i = {};
@@ -343,9 +349,10 @@ render() {
               />
               )
               })}
+          </g>      
           <g>
-            <line css={STYLES_AXIS_LINE} x1="25" y1="550" x2="25" y2="50"/>
-            <line css={STYLES_AXIS_LINE} x1="25" y1="550" x2="575" y2="550" />
+            {/* <line css={STYLES_AXIS_LINE} x1="25" y1="550" x2="25" y2="50"/> */}
+            <line css={STYLES_AXIS_LINE} x1="8%" y1="90%" x2="92%" y2="90%" />
           </g>
         </svg>
       </div>
