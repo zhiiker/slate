@@ -32,14 +32,15 @@ let data = [
   { id: 14, date: randomDate(new Date(2018, 0, 1), new Date()), category: "3", value: getRandomInt(1000) },
 ];
 
-// Use this to determine how many tick marks to be written on X axis
-const tickNumber = 4;
+// Show tick markers on X axis && how many
+const showT = false;
+const tickNumber = 6;
 
 //Use this to change how many lines create grid in graph 
 const gridLineCount = 10
 
 //Use this to determine size of graph
-const width = 800
+const width = 900
 const height = 600
 
 import { css } from "@emotion/react";
@@ -439,6 +440,7 @@ export default class StatsPage extends React.Component {
           <Chart
             data={data}
             gridLineCount={gridLineCount}
+            showTicks={showT}
             maxTicks={tickNumber}
             height={height}
             width={width}
