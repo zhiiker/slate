@@ -19,7 +19,7 @@ const STYLES_AXIS_LINE = css`
 `;
 
 const STYLES_GRID_LINE = css `
-  stroke: ${Constants.system.moonstone};
+  stroke: url(#linear-gradient);
 `
 
 const STYLES_CHART_CIRCLE = css`
@@ -34,16 +34,18 @@ const STYLES_CHART_LINE = css`
 `;
 
 const STYLES_CHART_TEXT = css`
-  font-size: ${Constants.typescale.lvl1};
+  font-size: 12px;
   fill: ${Constants.system.white};
-  font-family: ${Constants.font.text};
+  font-family: ${Constants.font.code};
+  text-transform: uppercase;
 `;
 
 const STYLES_CHART_TEXT_Y = css`
-  font-size: ${Constants.typescale.lvl1};
+  font-size: 12px;
   fill: ${Constants.system.white};
-  font-family: ${Constants.font.text};
+  font-family: ${Constants.font.code};
   writing-mode:   vertical-rl;
+  text-transform: uppercase;
 `;
 
 export default class Chart extends React.Component {
@@ -57,8 +59,6 @@ export default class Chart extends React.Component {
     minY: {},
     maxY: {},
     ticks: [],
-    xLabel: {},
-    yLabel: {},
     organizedData: [],
     circles: [],
     gridX: [],
@@ -66,8 +66,6 @@ export default class Chart extends React.Component {
   };
 
   componentDidMount() {
-    this.getXLabel();
-    this.getYLabel();
     this.getMinX(); 
     this.getMaxX();
     this.getMinY();
@@ -92,23 +90,6 @@ export default class Chart extends React.Component {
     "Nov",
     "Dec",
   ];
-
-  //Set Axis Labels
-  getXLabel() {
-    const { data } = this.props;
-    let allLabels = Object.keys(data[0]);
-    this.setState({
-      xLabel: allLabels[0],
-    });
-  }
-
-  getYLabel() {
-    const { data } = this.props;
-    let allLabels = Object.keys(data[0]);
-    this.setState({
-      yLabel: allLabels[2],
-    });
-  }
 
   //Get Min & Max X
   getMinX() {
@@ -297,6 +278,7 @@ export default class Chart extends React.Component {
 
 
   render() {
+    const { data } = this.props;
     const { showTicks } = this.props;
     const { width } = this.props;
     const { height } = this.props;
@@ -305,9 +287,9 @@ export default class Chart extends React.Component {
       <div id="graphContainer" css={STYLES_GRAPH_CONTAINER}>
         <svg css={STYLES_GRAPH} viewBox={ (`0 0 ${width} ${height}`) }>
           <defs>
-          <linearGradient id="Gradient1" x1="0" y1="0" x2="0" y2="100%">
-            <stop offset="0%" stopColor={Constants.system.moonstone}  />
-            <stop offset="100%" stopColor={Constants.system.white} />
+          <linearGradient id="linear-gradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="100%" >
+            <stop offset="14%" stopColor={Constants.system.white}  stopOpacity="0%"/>
+            <stop offset="79%" stopColor={Constants.system.moonstone} stopOpacity="85%"/>        
           </linearGradient>
           </defs>
           <g id="grid">
@@ -340,10 +322,10 @@ export default class Chart extends React.Component {
             </g> : 
           (<g id="xLabel">
             <text css={STYLES_CHART_TEXT} x="8%" y="95%">
-                Date  
+                {Object.keys(data[0])[1]} 
               </text>
-              <text css={STYLES_CHART_TEXT_Y} x="5%" y="82%">
-                Value 
+              <text css={STYLES_CHART_TEXT_Y} x="6%" y="82%">
+                {Object.keys(data[0])[3]}
               </text>
           </g>)
           }
